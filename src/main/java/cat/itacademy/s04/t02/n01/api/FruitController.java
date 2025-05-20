@@ -36,17 +36,13 @@ public class FruitController {
         service.delete(id);
     }
 
+    @GetMapping("/{id}")
+    public FruitResponseDTO getOne(@PathVariable Long id) {
+        return service.getOne(id);
+    }
+
     @GetMapping
     public List<FruitResponseDTO> getAll() {
         return service.getAll();
     }
-
-    /*
-http://localhost:8080/fruita/add
-http://localhost:8080/fruita/update
-http://localhost:8080/fruita/delete/{id}
-http://localhost:8080/fruita/getOne/{id}
-http://localhost:8080/fruita/getAll
-     */
-
 }

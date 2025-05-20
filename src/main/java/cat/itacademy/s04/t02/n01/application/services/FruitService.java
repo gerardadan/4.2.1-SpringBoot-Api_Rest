@@ -2,6 +2,7 @@ package cat.itacademy.s04.t02.n01.application.services;
 
 import cat.itacademy.s04.t02.n01.application.dto.FruitRequestDTO;
 import cat.itacademy.s04.t02.n01.application.dto.FruitResponseDTO;
+import cat.itacademy.s04.t02.n01.application.exception.FruitNotFoundException;
 import cat.itacademy.s04.t02.n01.domain.entity.Fruit;
 import cat.itacademy.s04.t02.n01.infrasctructure.repository.FruitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,7 @@ import java.util.List;
 
 @Service
 public class FruitService {
-    @Autowired
-    private FruitRepository fruitRepository;
+    private final FruitRepository fruitRepository;
 
     public FruitService(FruitRepository fruitRepository) {
         this.fruitRepository = fruitRepository;
@@ -30,7 +30,7 @@ public class FruitService {
 
     public FruitResponseDTO update(FruitRequestDTO fruitRequestDTO) {
         Fruit fruit = fruitRepository.findById(fruitRequestDTO.id)
-                .orElseThrow(() -> new RuntimeException("Id fruit not found"));
+                .orElseThrow(() -> new FruitNotFoundException("Id fruit not found"));
         fruit.setName(fruitRequestDTO.name);
         fruit.setKilogramQuantity(fruitRequestDTO.kilogramQuantity);
 
@@ -41,9 +41,16 @@ public class FruitService {
 
     public void delete(long id) {
         Fruit fruit = fruitRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Id fruit not found"));
+                .orElseThrow(() -> new FruitNotFoundException("Id fruit not found"));
 
         fruitRepository.delete(fruit);
+    }
+
+    public FruitResponseDTO getOne(long id) {
+        Fruit fruit = fruitRepository.findById(id)
+                .orElseThrow(() -> new FruitNotFoundException("Id fruit not found"));
+
+        return new FruitResponseDTO(fruit.getId(), fruit.getName(), fruit.getKilogramQuantity());
     }
 
     public List<FruitResponseDTO> getAll() {
